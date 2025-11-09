@@ -48,37 +48,46 @@ public class ProjectTrackerController {
         return new ApiResponse("project added successfully", "200");
     }
 
-    @PutMapping("/update-project/{index}")
-    public ApiResponse projectUpdate(@PathVariable int index, @RequestBody ProjectTrackerSystem project){
-        if(projects.size() > index){
+    @PutMapping("/update-project/{id}")
+    public ApiResponse projectUpdate(@PathVariable String id, @RequestBody ProjectTrackerSystem project){
+        for (int i = 0; i< projects.size(); i++){
+            if(projects.get(i).getId().equalsIgnoreCase(id)){
             if(project.getCompanyName() == null || project.getDescription() == null
                     || project.getTitle() == null || project.getId() == null){
                 return new ApiResponse("Please fill all the project information", "404");
             }else {
-                projects.set(index, project);
+                projects.set(i, project);
                 return new ApiResponse("project updated successfully", "200");
             }
-        }return new ApiResponse("project not found", "404");
-    }
-
-    @PutMapping("/update-status/{index}")
-    public ApiResponse projectStatusUpdate(@PathVariable int index){
-        if(projects.size() > index){
-            if(projects.get(index).isDone()){
-                return new ApiResponse("project status is already done", "200");
-            }else projects.get(index).setDone(true);
-            return new ApiResponse("project status updated successfully", "200");
-
+            }
         }
         return new ApiResponse("project not found", "404");
     }
 
-    @DeleteMapping("/delete-project/{index}")
-    public ApiResponse projectDelete(@PathVariable int index){
-        if(projects.size() > index){
-            projects.remove(index);
-            return new ApiResponse("project deleted successfully", "200");
-        }return new ApiResponse("project not found", "404");
+    @PutMapping("/update-status/{id}")
+    public ApiResponse projectStatusUpdate(@PathVariable String id){
+        for (int i = 0; i< projects.size(); i++){
+            if(projects.get(i).getId().equalsIgnoreCase(id)){
+            if(projects.get(i).isDone()){
+                return new ApiResponse("project status is already done", "200");
+            }else {
+                projects.get(i).setDone(true);
+                return new ApiResponse("project status updated successfully", "200");
+            }
+            }
+        }
+        return new ApiResponse("project not found", "404");
+    }
+
+    @DeleteMapping("/delete-project/{id}")
+    public ApiResponse projectDelete(@PathVariable String id){
+        for (int i = 0; i< projects.size(); i++){
+            if(projects.get(i).getId().equalsIgnoreCase(id)){
+                projects.remove(i);
+                return new ApiResponse("project deleted successfully", "200");
+            }
+        }
+        return new ApiResponse("project not found", "404");
     }
 
 }

@@ -72,32 +72,38 @@ public class StudentsController {
         return new ApiResponse("student created successfully", "200");
     }
 
-    @PutMapping("/update-student/{index}")
-    public ApiResponse studentUpdate(@PathVariable int index, @RequestBody StudentSystem student){
-        if(students.size() > index){
-            if(student.getAge() <= 0 || student.getGpa() <= 0 || student.getDegree() == null
-                    || student.getId() == null || student.getName() == null){
+    @PutMapping("/update-student/{id}")
+    public ApiResponse studentUpdate(@PathVariable String id, @RequestBody StudentSystem student){
+        for (int i = 0; i< students.size(); i++){
+            if(students.get(i).getId().equalsIgnoreCase(id)){
+                if(student.getAge() <= 0 || student.getGpa() <= 0 || student.getDegree() == null
+                || student.getId() == null || student.getName() == null){
                 return new ApiResponse("Please fill all student the information", "404");
-            }else {
-                if(student.getGpa() >= 4.75){
-                    student.setHonorsCategory("First Honors");
-
-                }else if(student.getGpa() < 4.75 && student.getGpa() >= 4.25){
-                    student.setHonorsCategory("Second Honors");
-                } else student.setHonorsCategory("No Honors status");
-                students.set(index, student);
-                return new ApiResponse("Student updated successfully", "200");
+                    } else {
+                        if(student.getGpa() >= 4.75){
+                            student.setHonorsCategory("First Honors");
+                        }else if(student.getGpa() < 4.75 && student.getGpa() >= 4.25){
+                            student.setHonorsCategory("Second Honors");
+                        } else student.setHonorsCategory("No Honors status");
+                        students.set(i, student);
+                        return new ApiResponse("Student updated successfully", "200");
+                }
             }
-        }return new ApiResponse("user not found", "404");
+        }
+        return new ApiResponse("user not found", "404");
     }
 
 
-    @DeleteMapping("/delete-student/{index}")
-    public ApiResponse studentDelete(@PathVariable int index){
-        if(students.size() > index){
-            students.remove(index);
-            return new ApiResponse("student deleted successfully", "200");
-        }return new ApiResponse("user not found", "404");
+
+    @DeleteMapping("/delete-student/{id}")
+    public ApiResponse studentDelete(@PathVariable String id){
+        for (int i = 0; i< students.size(); i++){
+            if(students.get(i).getId().equalsIgnoreCase(id)){
+                students.remove(i);
+                return new ApiResponse("student deleted successfully", "200");
+            }
+        }
+        return new ApiResponse("user not found", "404");
     }
 
 
